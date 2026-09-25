@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <meta name="robots" content="noindex" />
+    <title>Genius in Saint Petersburg</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" crossorigin href="./assets/index-BPnVpDg7.css">
+    <style>
+      #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#111;z-index:9999;font-family:Georgia,serif}
+      #gate form{display:flex;flex-direction:column;gap:12px;width:min(300px,86vw);color:#efe6d6;text-align:center}
+      #gate input,#gate button{font:inherit;font-size:18px;padding:12px;border-radius:8px;border:1px solid #555;background:#1c1c1c;color:#efe6d6}
+      #gate button{background:#efe6d6;color:#111;cursor:pointer}
+      #gate .err{color:#e57373;min-height:1.2em;font-size:14px}
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="gate"><form>
+      <div style="font-size:22px">Genius in Saint Petersburg</div>
+      <input type="password" placeholder="Пароль" autofocus autocomplete="current-password" />
+      <button>Играть</button>
+      <div class="err"></div>
+    </form></div>
+    <script type="module">
+      const gate = document.getElementById('gate'), form = gate.querySelector('form'),
+        input = form.querySelector('input'), btn = form.querySelector('button'), err = form.querySelector('.err');
+      const data = fetch('./assets/game.bin').then(r => r.arrayBuffer());
+      async function unlock(pw) {
+        const buf = new Uint8Array(await data);
+        const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+        const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: buf.slice(0, 16), iterations: 250000, hash: 'SHA-256' },
+          base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+        const js = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(16, 28) }, key, buf.slice(28));
+        try { localStorage.setItem('gspb-pw', pw) } catch {}
+        gate.remove();
+        await import(URL.createObjectURL(new Blob([js], { type: 'text/javascript' })));
+      }
+      form.onsubmit = async e => {
+        e.preventDefault(); btn.disabled = true; err.textContent = '';
+        try { await unlock(input.value) } catch { err.textContent = 'Неверный пароль'; btn.disabled = false; input.select() }
+      };
+      let saved = null; try { saved = localStorage.getItem('gspb-pw') } catch {}
+      if (saved) unlock(saved).catch(() => {});
+    </script>
+  </body>
+</html>
