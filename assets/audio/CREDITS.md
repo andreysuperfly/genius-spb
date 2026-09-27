@@ -26,3 +26,5 @@
 
 | rain_main.ogg | «copyright free rain sounds» — Dragon Studio (Pixabay, 331497) | петля 240 с, crossfade 6 с, −24,6 LUFS (как прежний дождь) |
 | music_tree.ogg | «567567» — автор игры | 32 с, петля; звучит у дерева за гаражом, громкость от расстояния, в такт с основной |
+| snore.ogg (+ .json) | своя запись (art-inbox/music/snore_source.wav) | автор игры | петля 31 с, моно, громкость по кадрам для рта — snore.json |
+| cat.ogg | своя запись (art-inbox/music/cat_source.wav) | автор игры | тишина в начале обрезана, моно |
