@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex" />
     <title>Genius in Saint Petersburg</title>
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" crossorigin href="./assets/index-CXn5SwQG.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-BVHI4THu.css">
     <style>
       #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#111;z-index:9999;font-family:Georgia,serif}
       #gate form{display:flex;flex-direction:column;gap:12px;width:min(300px,86vw);color:#efe6d6;text-align:center}
@@ -34,7 +34,23 @@
           base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
         const js = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(16, 28) }, key, buf.slice(28));
         try { localStorage.setItem('gspb-pw', pw) } catch {}
-        gate.remove();
+        // пока игра грузится — афоризм (случайный из пяти), гаснет, когда появится титульный экран
+        const Q = [
+          'Кто долго бежит от своего лица, однажды находит его на чужой обложке.',
+          'В городе, где не звучат твои песни, впервые слышишь тишину. Она громче стадионов.',
+          'Прошлое не прогоняет гостей из будущего. Оно их кормит — и смотрит, что они сделают с едой.',
+          'Убийцу ищут в чужом городе те, кто боится найти его в себе.',
+          'Всякая слава — лестница. Внизу на ней всегда кто-то спит.',
+        ];
+        gate.innerHTML = '<div style="max-width:min(620px,84vw);color:#cfc5b3;font-size:clamp(18px,2.2vw,26px);line-height:1.45;font-style:italic;text-align:center;opacity:0;transition:opacity 1.2s">' + Q[Math.floor(Math.random() * Q.length)] + '</div>';
+        requestAnimationFrame(() => (gate.firstChild.style.opacity = '1'));
+        const started = Date.now();
+        const done = new MutationObserver(() => {
+          if (!document.querySelector('.title, .title-bg, .ci')) return;
+          done.disconnect();
+          setTimeout(() => { gate.style.transition = 'opacity 0.8s'; gate.style.opacity = '0'; setTimeout(() => gate.remove(), 800); }, Math.max(0, 2600 - (Date.now() - started)));
+        });
+        done.observe(document.body, { childList: true, subtree: true });
         // код ссылается на свои файлы через import.meta.url — у расшифрованного кода адреса нет, подставляем папку assets
         const src = new TextDecoder().decode(js).replaceAll('import.meta.url', JSON.stringify(new URL('./assets/game.js', location.href).href));
         await import(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));

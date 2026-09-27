@@ -28,3 +28,4 @@
 | music_tree.ogg | «567567» — автор игры | 32 с, петля; звучит у дерева за гаражом, громкость от расстояния, в такт с основной |
 | snore.ogg (+ .json) | своя запись (art-inbox/music/snore_source.wav) | автор игры | петля 31 с, моно, громкость по кадрам для рта — snore.json |
 | cat.ogg | своя запись (art-inbox/music/cat_source.wav) | автор игры | тишина в начале обрезана, моно |
+| doorbell.ogg | прислал автор (art-inbox/music/doorbell_source.mp3) | — | тишина в начале обрезана, моно |
