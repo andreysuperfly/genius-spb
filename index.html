@@ -34,16 +34,8 @@
           base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
         const js = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(16, 28) }, key, buf.slice(28));
         try { localStorage.setItem('gspb-pw', pw) } catch {}
-        // пока игра грузится — афоризм (случайный из пяти), гаснет, когда появится титульный экран
-        const Q = [
-          'Кто долго бежит от своего лица, однажды находит его на чужой обложке.',
-          'В городе, где не звучат твои песни, впервые слышишь тишину. Она громче стадионов.',
-          'Прошлое не прогоняет гостей из будущего. Оно их кормит — и смотрит, что они сделают с едой.',
-          'Убийцу ищут в чужом городе те, кто боится найти его в себе.',
-          'Всякая слава — лестница. Внизу на ней всегда кто-то спит.',
-        ];
-        gate.innerHTML = '<div style="max-width:min(620px,84vw);color:#cfc5b3;font-size:clamp(18px,2.2vw,26px);line-height:1.45;font-style:italic;text-align:center;opacity:0;transition:opacity 1.2s">' + Q[Math.floor(Math.random() * Q.length)] + '</div>';
-        requestAnimationFrame(() => (gate.firstChild.style.opacity = '1'));
+        // пока игра грузится — чёрный экран без текста (гаснет, когда появится титульный экран)
+        gate.innerHTML = '';
         const started = Date.now();
         const done = new MutationObserver(() => {
           if (!document.querySelector('.title, .title-bg, .ci')) return;
